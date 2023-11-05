@@ -1,46 +1,109 @@
 package Functionality;
-
 import java.util.*;
 
 public class StockBroker {
-	private HashMap<User, Integer> userDB;
-	private HashMap<Stock, Integer> stockList;
+	private HashMap<String,User> userDB;
+	private HashMap<String,Stock> stockList;
+	Scanner sc = new Scanner(System.in);
 
-	public HashMap<User, Integer> getUserDB() {
+	public HashMap<String,User> getUserDB() {
 		return userDB;
 	}
 
-	public void setUserDB(HashMap<User, Integer> userDB) {
+	public void setUserDB(HashMap<String,User> userDB) {
 		this.userDB = userDB;
 	}
 
-	public HashMap<Stock, Integer> getStockList() {
+	public HashMap<String,Stock> getStockList() {
 		return stockList;
 	}
 
-	public void setStockList(HashMap<Stock, Integer> stockList) {
+	public void setStockList(HashMap<String,Stock> stockList) {
 		this.stockList = stockList;
 	}
 
+	public void addStock() {
+		User user = new User();
+		if(user.AdminAuth()) {
+			String symbol,exchange;
+			double price,brokerageCharge;
+			int quantity;
+			System.out.println("Enter Stock symbol");
+			symbol=sc.next();
+			if(stockList.containsKey(symbol)) {
+				System.out.println("Stock is already Listed!");
+				return;
+			}
+			System.out.println("Enter Stock exchange");
+			exchange=sc.next();
+			System.out.println("Enter Stock price");
+			price=sc.nextDouble();
+			System.out.println("Enter Stock brokerageCharge");
+			brokerageCharge=sc.nextDouble();
+			System.out.println("Enter Stock quantity");
+			quantity=sc.nextInt();
+			
+			Stock ob = new Stock();
+			ob.setBrokerageCharge(brokerageCharge);
+			ob.setExchange(exchange);
+			ob.setPrice(price);
+			ob.setQuantity(quantity);
+			ob.setSymbol(symbol);
+			stockList.put(symbol,ob);
+		}else {
+			System.out.println("Wrong password!");
+		}
+		
+	}
+	
+	
+	public void removeStock() {
+		User user = new User();
+		if(user.AdminAuth()) {
+			String symbol;
+			System.out.println("Enter Stock symbol");
+			symbol=sc.next();
+			if(stockList.containsKey(symbol)) {
+				Stock stock = stockList.get(symbol);
+				stockList.remove(stock);
+			}
+		}else {
+			System.out.println("Wrong password!");
+		}
+		
+	}
+	
+	public void sellStock(String password) {
+		User user = new User();
+		if(user.AdminAuth()) {
+			
+		}else {
+			System.out.println("Wrong password!");
+		}
+		
+	}
+	
 	public boolean register_users(String username, String password, String email, String pan, String phone,
 			String adhaar, String IFSC, String dob, String MICR, String category, long acc_no) {
 		Authentication ob = new Authentication();
-
-		for (User user : userDB.keySet()) {
-			if (user.getUsername().equals(username)) {
+		 
+			if(userDB.containsKey("username")) {
 				System.out.println("Username already exists!");
 				return false;
-			} else if (user.getEmail().equals(pan)) {
+			}	
+			
+			for(User user : userDB.values()) {
+			if (user.getPan().equals(pan)) {
 				System.out.println("Sorry!only one trading account can be opened with one PAN with one broker");
 				return false;
-			} else if (user.getPan().equals(email)) {
+			} else if (user.getEmail().equals(email)) {
 				System.out.println("Email ID already registered!Please log in");
 				return false;
 			} else if (user.getPhone().equals(phone)) {
 				System.out.println("Phone number already registered!Please log in");
 				return false;
+				}
 			}
-		}
 
 		if (!ob.passwordAuth(password)) {
 			return false;
@@ -67,18 +130,20 @@ public class StockBroker {
 		}
 
 		User user = new User();
+		//While implementation I will encrypt the password
 		user.setData(username, password, email, pan, phone, adhaar, IFSC, dob, MICR, category, acc_no);
-		userDB.put(user, 1);
+		userDB.put(username, user);
 
 		return true;
 	}
 
-	public boolean unregister_users(User user) {
+	public boolean unregister_users(String username) {
 
-		if (userDB.containsKey(user)) {
-			HashMap<Stock, Integer> stockList = user.getStocksOwned();
+		if (userDB.containsKey(username)) {
+			User user = userDB.get(username);
+			HashMap<Stock,Integer> stockList = user.getStocksOwned();
 			if (stockList.isEmpty()) {
-				userDB.remove(user);
+				userDB.remove(username);
 				System.out.println("Account removed successfully!");
 				return true;
 			} else {
@@ -90,48 +155,59 @@ public class StockBroker {
 		return false;
 	}
 
-	public int placeOrder(User user,Stock stock, boolean isBuyorder, int quantity,String timeInforce) {
-		
+	public int placeOrder(String username,String symbol, boolean isBuyorder, int quantity,String timeInforce) {
 		int result = -1;
 		Order order = new Order();
 		if(isBuyorder) {
-			if(stockList.containsKey(stock)) {
+			if(stockList.containsKey(symbol)) {
+					Stock stock = stockList.get(symbol);
 					result = order.placeOrder(stock, isBuyorder,quantity,timeInforce);
 				}else {
 					System.out.println("Stock is not listed!");
 				}
-			return result;
 			}else {
+			User user = userDB.get(username);
 			HashMap<Stock,Integer> stocksTocheck = user.getStocksOwned();
+			Stock stock = stockList.get(symbol);
 			        if (stocksTocheck.containsKey(stock)) {
 			        	result = order.placeOrder(stock, isBuyorder,quantity,timeInforce);
 			        }else{
 			            System.out.println("You don't have the stocks to sell.");
 			        }
 			    }
+		return result;
 			}
 
-	public boolean setnewpasswrd(String newPass) {
+	public boolean setnewpasswrd(String username,String newPass) {
 		// TODO Auto-generated method stub
 		Authentication auth = new Authentication();
-		boolean result = auth.passwordAuth(newPass)
+		boolean result = auth.passwordAuth(newPass);
+		//Implementation details
+		//Encrypt the new password and then store it
+		User user = userDB.get(username);
+		user.setPassword(newPass);
 		return result;
 	}
 
 	public double getBrokerage(Stock stock) {
 		// TODO Auto-generated method stub
-		stockList.get
-		return 0;
+		Stock stDetails = stockList.get(stock);
+		double brokerageCharges = stDetails.getBrokerageCharge()
+		return brokerageCharges;
 	}
 
-	public List<AccountStatement> getTransaction(String name, boolean istaxStmt) {
+	public HashMap<String,AccountStatement> getTransaction(String name, boolean istaxStmt) {
 		// TODO Auto-generated method stub
-		return null;
+		AccountStatement accstmt = new AccountStatement();
+		HashMap<String,AccountStatement> stmt = new HashMap<>();
+		stmt = accstmt.getStatement(name,istaxStmt);
+		return stmt;
 	}
 
 	public Stock getStockInfo(String name) {
 		// TODO Auto-generated method stub
-		return null;
+		Stock stockDetails = stockList.get(name);
+		return stockDetails;
 	}
 
 }

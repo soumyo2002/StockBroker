@@ -5,6 +5,7 @@ import java.util.*;
 		
 	    private String username;
 	    private String password;
+	    private String admin_password = "Adm1N*0n1yCtR!2023";
 	    private String phone;
 	    private String pan;
 	    private String email;
@@ -35,13 +36,18 @@ import java.util.*;
 		}
 		
 		
-
+		public boolean AdminAuth() {
+			System.out.println("Enter password");
+			String password = sc.next();
+			if(admin_password.equals(password))
+				return true;
+			else
+				return false;
+		}
 
 		public String getUsername() {
 			return username;
 		}
-
-
 
 		public void setUsername(String username) {
 			this.username = username;
@@ -56,7 +62,6 @@ import java.util.*;
 
 
 		public void setPassword(String password) {
-			//While implementation,before setting the password I'll encrypt it
 			this.password = password;
 		}
 
@@ -182,6 +187,7 @@ import java.util.*;
 
 		public void setData(String username, String password, String email, String pan, String phone, String adhaar, String IFSC, String dob, String MICR, String category, long acc_no) {
 	        this.username = username;
+	      //While implementation I will encrypt the password
 	        this.password = password;
 	        this.email = email;
 	        this.pan = pan;
@@ -204,7 +210,7 @@ import java.util.*;
 	        
 	    }
 		
-		public void unregister(User user) {
+		public void unregister(String user) {
 			
 	        boolean result = broker.unregister_users(user);
 	        
@@ -214,23 +220,25 @@ import java.util.*;
 	        	System.out.println("Unregistration failed!");
 		}
 		
-		public void buyStock(User user,Stock stock,int quantity,String timeInforce) {
+		public void buyStock(String user,String stock,int quantity,String timeInforce) {
 	        int result = broker.placeOrder(user,stock,true,quantity,timeInforce);
+	        Stock stockDetails = broker.getStockInfo(stock);
 	        if(result == quantity) {
-	        	setStocksOwned(stock,quantity);
+	        	setStocksOwned(stockDetails,quantity);
 	        	System.out.println("Order Fully filled");
 	        }
 	        else if(result == -1) {
 	        	System.out.println("Order Failed!");
 	        }else {
-	        	setStocksOwned(stock,result);
+	        	setStocksOwned(stockDetails,result);
 	        	System.out.println("Order partially filled");
 	        }
 	        	
 		}
 		
-		public void sellStock(User user,Stock stock,int quantity,String timeInforce) {
+		public void sellStock(String user,String stock,int quantity,String timeInforce) {
 			int result = broker.placeOrder(user,stock,false,quantity,timeInforce);
+			Stock stockDetails = broker.getStockInfo(stock);
 	        if(result == quantity) {
 	        	stocksOwned.remove(stock);
 	        	System.out.println("Order Fully filled");
@@ -239,19 +247,21 @@ import java.util.*;
 	        	System.out.println("Order Failed!");
 	        }else {
 	        	int remaining = quantity-result;
-	        	stocksOwned.put(stock,remaining);
+	        	stocksOwned.put(stockDetails, remaining);
 	        	System.out.println("Order partially filled");
 	        }
 		}
 		
 		public void resetPassword() {
-			String oldPass = "",newPass = "";
+			String oldPass = "",newPass = "",username="";
+			System.out.println("Enter username");
+			username = sc.next();
 			System.out.println("Enter old password");
 			oldPass = sc.next();
 			if(oldPass.equals(getPassword())) {
 			System.out.println("Enter new password");
 			newPass = sc.next();
-			boolean result = broker.setnewpasswrd(newPass);
+			boolean result = broker.setnewpasswrd(username, newPass);
 			if(result == true) {
 				setPassword(newPass);
 				System.out.println("Password changed successfully!");
@@ -264,13 +274,13 @@ import java.util.*;
 		}
 		
 		public void queryBrokerageCharges(String name) {
-			double result = broker.getBrokerage(name);
+			Stock stock = broker.getStockInfo(name);
+			double result = broker.getBrokerage(Stock);
 			System.out.println("Stock "+name+" has Rs."+result+"as brokerage charge");
 			
 		}
 		public void getTransactionInfo(String name,boolean istaxStmt) {
-			List<AccountStatement> result = new ArrayList<>();
-			result = broker.getTransaction(name,istaxStmt);
+			HashMap<String,AccountStatement> result = broker.getTransaction(name,istaxStmt);
 			System.out.println(result);
 		}
 		public void searchStock(String name) {
