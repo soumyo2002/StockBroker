@@ -1,13 +1,13 @@
 package Functionality;
 
-public class Order {
-	String status;
+public class Marketorder extends Order {
+String status;
 	
 	public int placeOrder(String username,Stock ob,boolean isBuyOrder, int quantity, String timeInforce) {
 		if(isBuyOrder) {
-			OrderAuth auth = new OrderAuth();
 			double price = ob.getPrice();
 			double finalprice = quantity*price;
+			OrderAuth auth = new OrderAuth();
 			boolean result = auth.orderValidator(username,finalprice);
 			if(result == false)
 				return -1;

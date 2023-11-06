@@ -221,7 +221,29 @@ import java.util.*;
 		}
 		
 		public void buyStock(String user,String stock,int quantity,String timeInforce) {
-	        int result = broker.placeOrder(user,stock,true,quantity,timeInforce);
+	        System.out.println("Enter what type of order you want to place.");
+	        System.out.println("Enter 1 for limit order,2 for stoploss order,3 for stoplimit order and 4 for market order");
+	        int input = sc.nextInt();
+	        String orderType = "";
+	        
+	        switch (input){
+	        	case 1:
+	        		orderType = "limit";
+	        		break;
+	        	case 2:
+	        		orderType = "stoploss";
+	        		break;
+	        	case 3:
+	        		orderType = "stoplimit";
+	        		break;
+	        	case 4:
+	        		orderType = "market";
+	        		break;
+	        	default:
+	        		System.out.print("Wrong input!");
+	        		
+		}
+	        int result = broker.placeOrder(user,stock,true,quantity,timeInforce,orderType);
 	        Stock stockDetails = broker.getStockInfo(stock);
 	        if(result == quantity) {
 	        	setStocksOwned(stockDetails,quantity);
@@ -237,10 +259,32 @@ import java.util.*;
 		}
 		
 		public void sellStock(String user,String stock,int quantity,String timeInforce) {
-			int result = broker.placeOrder(user,stock,false,quantity,timeInforce);
+			System.out.println("Enter what type of order you want to place.");
+	        System.out.println("Enter 1 for limit order,2 for stoploss order,3 for stoplimit order and 4 for market order");
+	        int input = sc.nextInt();
+	        String orderType = "";
+	        
+	        switch (input){
+	        	case 1:
+	        		orderType = "limit";
+	        		break;
+	        	case 2:
+	        		orderType = "stoploss";
+	        		break;
+	        	case 3:
+	        		orderType = "stoplimit";
+	        		break;
+	        	case 4:
+	        		orderType = "market";
+	        		break;
+	        	default:
+	        		System.out.print("Wrong input!");
+	        		
+		}
+	        int result = broker.placeOrder(user,stock,true,quantity,timeInforce,orderType);
 			Stock stockDetails = broker.getStockInfo(stock);
 	        if(result == quantity) {
-	        	stocksOwned.remove(stock);
+	        	stocksOwned.remove(stockDetails);
 	        	System.out.println("Order Fully filled");
 	        }
 	        else if(result == -1) {
@@ -274,8 +318,7 @@ import java.util.*;
 		}
 		
 		public void queryBrokerageCharges(String name) {
-			Stock stock = broker.getStockInfo(name);
-			double result = broker.getBrokerage(Stock);
+			double result = broker.getBrokerage(name);
 			System.out.println("Stock "+name+" has Rs."+result+"as brokerage charge");
 			
 		}
@@ -289,7 +332,14 @@ import java.util.*;
 			System.out.println(result);
 		}
 
-		
+		public void OrderStatus(Order orderDetails) {
+			orderDetails.getStatus();
+		}
+		public void ProfileDetails(String username) {
+			User userDetails = new User();
+			userDetails = broker.getUserDetails(username);
+			System.out.println(userDetails);
+		}
 		
 	}
 

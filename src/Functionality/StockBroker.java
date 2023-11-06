@@ -64,8 +64,7 @@ public class StockBroker {
 			System.out.println("Enter Stock symbol");
 			symbol=sc.next();
 			if(stockList.containsKey(symbol)) {
-				Stock stock = stockList.get(symbol);
-				stockList.remove(stock);
+				stockList.remove(symbol);
 			}
 		}else {
 			System.out.println("Wrong password!");
@@ -155,13 +154,22 @@ public class StockBroker {
 		return false;
 	}
 
-	public int placeOrder(String username,String symbol, boolean isBuyorder, int quantity,String timeInforce) {
+	public int placeOrder(String username,String symbol, boolean isBuyorder, int quantity,String timeInforce, String orderType) {
 		int result = -1;
-		Order order = new Order();
+		if(orderType.equals("limit")) {
+			Order order = new LimitOrder();
+		}else if(orderType.equals("stoploss")) {
+			Order order = new StopLossOrder();
+		}else if(orderType.equals("stoplimit")) {
+			Order order = new StopLimitOrder();
+		}else {
+			Order order = new MarketOrder();
+		}
+		
 		if(isBuyorder) {
 			if(stockList.containsKey(symbol)) {
 					Stock stock = stockList.get(symbol);
-					result = order.placeOrder(stock, isBuyorder,quantity,timeInforce);
+					result = order.placeOrder(username,stock, isBuyorder,quantity,timeInforce);
 				}else {
 					System.out.println("Stock is not listed!");
 				}
@@ -170,7 +178,7 @@ public class StockBroker {
 			HashMap<Stock,Integer> stocksTocheck = user.getStocksOwned();
 			Stock stock = stockList.get(symbol);
 			        if (stocksTocheck.containsKey(stock)) {
-			        	result = order.placeOrder(stock, isBuyorder,quantity,timeInforce);
+			        	result = order.placeOrder(username,stock, isBuyorder,quantity,timeInforce);
 			        }else{
 			            System.out.println("You don't have the stocks to sell.");
 			        }
@@ -189,10 +197,10 @@ public class StockBroker {
 		return result;
 	}
 
-	public double getBrokerage(Stock stock) {
+	public double getBrokerage(String stockName) {
 		// TODO Auto-generated method stub
-		Stock stDetails = stockList.get(stock);
-		double brokerageCharges = stDetails.getBrokerageCharge()
+		Stock stDetails = stockList.get(stockName);
+		double brokerageCharges = stDetails.getBrokerageCharge();
 		return brokerageCharges;
 	}
 
@@ -208,6 +216,11 @@ public class StockBroker {
 		// TODO Auto-generated method stub
 		Stock stockDetails = stockList.get(name);
 		return stockDetails;
+	}
+
+	public User getUserDetails(String username) {
+		User userDetails = userDB.get(username);
+		return userDetails;
 	}
 
 }
