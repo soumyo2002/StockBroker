@@ -15,7 +15,7 @@ The Stock Broker App has the following key requirements:
 
 ## Class Diagram
 
-[class diagram.pdf](https://github.com/soumyo2002/StockBroker/files/13276895/class.diagram.pdf)
+
 ![temp](https://github.com/soumyo2002/StockBroker/assets/92665254/ec5fc1b6-75b4-4689-ae50-f763f5f16623)
 
 
