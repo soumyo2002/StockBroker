@@ -15,13 +15,13 @@ public class Transaction {
 		exchangeAccount = 345708110;
 	}
 
-	public boolean initiateTransfer(String username, Stock stock, boolean isBuyOrder, int quantity, String timeInforce) {
+	public boolean initiateTransfer(String username, Stock stock, boolean isBuyOrder, int quantity, String timeInforce, double finalprice) {
 		StockBroker broker = new StockBroker();
 		User user = broker.getUserDetails(username);
 		userAccount = user.getAcc_no();
 		//initiate transfer using bank services
 		AccountStatement stmt = new AccountStatement();
-		stmt.createStatement(username,stock,isBuyOrder,quantity,timeInforce);
+		stmt.createStatement(username,stock,isBuyOrder,quantity,timeInforce,finalprice);
 		return true;
 	}
 }

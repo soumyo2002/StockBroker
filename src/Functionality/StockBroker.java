@@ -156,14 +156,15 @@ public class StockBroker {
 
 	public int placeOrder(String username,String symbol, boolean isBuyorder, int quantity,String timeInforce, String orderType) {
 		int result = -1;
+		Order order;
 		if(orderType.equals("limit")) {
-			Order order = new LimitOrder();
+			order = new LimitOrder();
 		}else if(orderType.equals("stoploss")) {
-			Order order = new StopLossOrder();
+			order = new StopLossOrder();
 		}else if(orderType.equals("stoplimit")) {
-			Order order = new StopLimitOrder();
+			order = new StopLimitOrder();
 		}else {
-			Order order = new MarketOrder();
+			order = new Marketorder();
 		}
 		
 		if(isBuyorder) {

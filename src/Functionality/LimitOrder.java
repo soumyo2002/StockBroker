@@ -7,11 +7,12 @@ public class LimitOrder extends Order {
 	Scanner sc = new Scanner(System.in);
 	
 	public int placeOrder(String username,Stock ob,boolean isBuyOrder, int quantity, String timeInforce) {
+		double price = 0.0,finalprice = 0.0;
 		System.out.println("Enter price limit");
 		priceLimit = sc.nextDouble();
 		if(isBuyOrder && ob.getPrice()<=priceLimit) {
-			double price = ob.getPrice();
-			double finalprice = quantity*price;
+			price = ob.getPrice();
+			finalprice = quantity*price;
 			OrderAuth auth = new OrderAuth();
 			boolean result = auth.orderValidator(username,finalprice);
 			if(result == false)
@@ -21,7 +22,7 @@ public class LimitOrder extends Order {
 		}
 		ExchangeConnection connector = new ExchangeConnection();
 		//Order will be placed at priceLimit or better price
-		int quantityPlaced = connector.placeOrder(username,ob,isBuyOrder,quantity,timeInforce);
+		int quantityPlaced = connector.placeOrder(username,ob,isBuyOrder,quantity,timeInforce,finalprice);
 		
 		if(quantityPlaced == quantity) {
 			this.status = "filled";
