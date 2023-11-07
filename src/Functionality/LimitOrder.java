@@ -12,7 +12,8 @@ public class LimitOrder extends Order {
 		priceLimit = sc.nextDouble();
 		if(isBuyOrder && ob.getPrice()<=priceLimit) {
 			price = ob.getPrice();
-			finalprice = quantity*price;
+			double brokerageCharge = ob.getBrokerageCharge();
+			finalprice = (quantity*price)+brokerageCharge;
 			OrderAuth auth = new OrderAuth();
 			boolean result = auth.orderValidator(username,finalprice);
 			if(result == false)

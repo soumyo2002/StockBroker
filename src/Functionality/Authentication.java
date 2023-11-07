@@ -1,9 +1,9 @@
 package Functionality;
-
+import java.util.*;
 public class Authentication {
-
+	
+	Scanner sc = new Scanner(System.in);
 	public boolean passwordAuth(String password) {
-		// TODO Auto-generated method stub
 		int len = password.length();
 		    if (len <= 8) {
 		        System.out.println("Password length must be greater than 8 characters");
@@ -26,27 +26,39 @@ public class Authentication {
 		    }
 		    return true;
 		    
-		    //For more advanced check,we can use certain APIs that check for password strength
+		    
 		}
 
 	public boolean otpAuth(String email, boolean isEmail) {
-		// TODO Auto-generated method stub
-		return false;
+		// logic to generate and send otp 
+		return true;
 	}
 
 	public boolean panAuth(String pan) {
-		// TODO Auto-generated method stub
-		return false;
+		// logic to authenticate PAN
+		return true;
 	}
 
 	public boolean adhaarAuth(String adhaar) {
-		// TODO Auto-generated method stub
-		return false;
+		// logic to authenticate Adhaar
+		return true;
 	}
 
-	public boolean bankAuth(String IFSC, String mICR, long acc_no) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean bankAuth(String IFSC, String MICR, long acc_no) {
+		// logic to authentciate bank details
+		return true;
+	}
+	
+	public boolean AdminAuth() {
+		String password;
+		System.out.println("Enter admin password");
+		password = sc.next();
+		User user = new User();
+		String admin_password = user.getAdmin_password();
+		if(admin_password.equals(password))
+			return true;
+		else
+			return false;
 	}
 
 }

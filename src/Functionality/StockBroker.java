@@ -4,8 +4,14 @@ import java.util.*;
 public class StockBroker {
 	private HashMap<String,User> userDB;
 	private HashMap<String,Stock> stockList;
-	Scanner sc = new Scanner(System.in);
+	Scanner sc;
 
+	public StockBroker() {
+		userDB = new HashMap<>();
+		stockList = new HashMap<>();
+		sc = new Scanner(System.in);
+	}
+	
 	public HashMap<String,User> getUserDB() {
 		return userDB;
 	}
@@ -23,8 +29,8 @@ public class StockBroker {
 	}
 
 	public void addStock() {
-		User user = new User();
-		if(user.AdminAuth()) {
+		Authentication auth = new Authentication();
+		if(auth.AdminAuth()) {
 			String symbol,exchange;
 			double price,brokerageCharge;
 			int quantity;
@@ -50,6 +56,7 @@ public class StockBroker {
 			ob.setQuantity(quantity);
 			ob.setSymbol(symbol);
 			stockList.put(symbol,ob);
+			System.out.println("Stock added successfully!");
 		}else {
 			System.out.println("Wrong password!");
 		}
@@ -58,8 +65,8 @@ public class StockBroker {
 	
 	
 	public void removeStock() {
-		User user = new User();
-		if(user.AdminAuth()) {
+		Authentication auth = new Authentication();
+		if(auth.AdminAuth()) {
 			String symbol;
 			System.out.println("Enter Stock symbol");
 			symbol=sc.next();
@@ -72,20 +79,11 @@ public class StockBroker {
 		
 	}
 	
-	public void sellStock(String password) {
-		User user = new User();
-		if(user.AdminAuth()) {
-			
-		}else {
-			System.out.println("Wrong password!");
-		}
-		
-	}
 	
 	public boolean register_users(String username, String password, String email, String pan, String phone,
 			String adhaar, String IFSC, String dob, String MICR, String category, long acc_no) {
 		Authentication ob = new Authentication();
-		 
+		 if(!userDB.isEmpty()) {
 			if(userDB.containsKey("username")) {
 				System.out.println("Username already exists!");
 				return false;
@@ -103,6 +101,7 @@ public class StockBroker {
 				return false;
 				}
 			}
+		 }
 
 		if (!ob.passwordAuth(password)) {
 			return false;
@@ -135,6 +134,8 @@ public class StockBroker {
 
 		return true;
 	}
+
+	
 
 	public boolean unregister_users(String username) {
 
@@ -199,10 +200,17 @@ public class StockBroker {
 	}
 
 	public double getBrokerage(String stockName) {
-		// TODO Auto-generated method stub
-		Stock stDetails = stockList.get(stockName);
-		double brokerageCharges = stDetails.getBrokerageCharge();
-		return brokerageCharges;
+		System.out.println(stockList);
+		if (stockList.containsKey(stockName)) {
+	        Stock stDetails = stockList.get(stockName);
+	        System.out.println(stDetails);
+	        System.out.println(stDetails.getBrokerageCharge());
+	        double brokerageCharges = stDetails.getBrokerageCharge();
+	        return brokerageCharges;
+	    } else {
+	        System.out.println("Stock not found in the stock list.");
+	        return 0.0; 
+	    }
 	}
 
 	public HashMap<String,AccountStatement> getTransaction(String name, boolean istaxStmt) {

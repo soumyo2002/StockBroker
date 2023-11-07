@@ -5,7 +5,7 @@ import java.util.*;
 		
 	    private String username;
 	    private String password;
-	    private String admin_password = "Adm1N*0n1yCtR!2023";
+	    private String admin_password = "admin";
 	    private String phone;
 	    private String pan;
 	    private String email;
@@ -33,16 +33,6 @@ import java.util.*;
 			this.category = "";
 			this.acc_no = 0;
 			this.stocksOwned = new HashMap<>();
-		}
-		
-		
-		public boolean AdminAuth() {
-			System.out.println("Enter password");
-			String password = sc.next();
-			if(admin_password.equals(password))
-				return true;
-			else
-				return false;
 		}
 
 		public String getUsername() {
@@ -331,14 +321,22 @@ import java.util.*;
 			result = broker.getStockInfo(name);
 			System.out.println(result);
 		}
-
-		public void OrderStatus(Order orderDetails) {
-			orderDetails.getStatus();
-		}
 		public void ProfileDetails(String username) {
 			User userDetails = new User();
 			userDetails = broker.getUserDetails(username);
-			System.out.println(userDetails);
+			System.out.println("Username:"+userDetails.getUsername());
+			System.out.println("Phone number:"+userDetails.getPhone());
+			System.out.println("Email ID:"+userDetails.getEmail());
+			System.out.println("Category:"+userDetails.getCategory());
+			System.out.println("Stocks owned:");
+			HashMap<String,Stock> map = new HashMap<>();
+			for(String stock : map.keySet()) {
+				System.out.println(stock);
+			}
+		}
+
+		public String getAdmin_password() {
+			return admin_password;
 		}
 		
 	}

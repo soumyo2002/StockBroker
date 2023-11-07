@@ -8,7 +8,8 @@ String status;
 		double price = 0.0,finalprice = 0.0;
 		if(isBuyOrder) {
 			price = ob.getPrice();
-			finalprice = quantity*price;
+			double brokerageCharge = ob.getBrokerageCharge();
+			finalprice = (quantity*price)+brokerageCharge;
 			OrderAuth auth = new OrderAuth();
 			boolean result = auth.orderValidator(username,finalprice);
 			if(result == false)
