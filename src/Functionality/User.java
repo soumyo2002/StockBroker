@@ -16,6 +16,7 @@ import java.util.*;
 	    private String category;
 	    private long acc_no;
 	    private HashMap<Stock,Integer> stocksOwned;
+	    private boolean LoginStatus;
 	    
 	    Scanner sc = new Scanner(System.in);
 	    StockBroker broker = new StockBroker();
@@ -33,6 +34,7 @@ import java.util.*;
 			this.category = "";
 			this.acc_no = 0;
 			this.stocksOwned = new HashMap<>();
+			this.LoginStatus = false;
 		}
 
 		public String getUsername() {
@@ -210,6 +212,22 @@ import java.util.*;
 	        	System.out.println("Unregistration failed!");
 		}
 		
+		public boolean Login() {
+			LoginStatus = broker.Login();
+			return LoginStatus;
+		}
+		
+		public void Logout() {
+			LoginStatus = false;
+		}
+		
+		public void addStock() {
+			broker.addStock();
+		}
+		
+		public void removeStock() {
+			broker.removeStock();
+		}
 		public void buyStock(String user,String stock,int quantity,String timeInforce) {
 	        System.out.println("Enter what type of order you want to place.");
 	        System.out.println("Enter 1 for limit order,2 for stoploss order,3 for stoplimit order and 4 for market order");
@@ -233,19 +251,19 @@ import java.util.*;
 	        		System.out.print("Wrong input!");
 	        		
 		}
-	        int result = broker.placeOrder(user,stock,true,quantity,timeInforce,orderType);
+	        HashMap<Stock,Integer> stockOwned = this.getStocksOwned();
+	        int result = broker.placeOrder(username,acc_no,stock,true,quantity,timeInforce,orderType,stockOwned);
 	        Stock stockDetails = broker.getStockInfo(stock);
 	        if(result == quantity) {
-	        	setStocksOwned(stockDetails,quantity);
+	        	this.setStocksOwned(stockDetails,quantity);
 	        	System.out.println("Order Fully filled");
 	        }
 	        else if(result == -1) {
 	        	System.out.println("Order Failed!");
 	        }else {
-	        	setStocksOwned(stockDetails,result);
+	        	this.setStocksOwned(stockDetails,result);
 	        	System.out.println("Order partially filled");
 	        }
-	        	
 		}
 		
 		public void sellStock(String user,String stock,int quantity,String timeInforce) {
@@ -271,17 +289,18 @@ import java.util.*;
 	        		System.out.print("Wrong input!");
 	        		
 		}
-	        int result = broker.placeOrder(user,stock,true,quantity,timeInforce,orderType);
+	        HashMap<Stock,Integer> stockOwned = this.getStocksOwned();
+	        int result = broker.placeOrder(username,acc_no,stock,false,quantity,timeInforce,orderType,stockOwned);
 			Stock stockDetails = broker.getStockInfo(stock);
 	        if(result == quantity) {
-	        	stocksOwned.remove(stockDetails);
+	        	this.stocksOwned.remove(stockDetails);
 	        	System.out.println("Order Fully filled");
 	        }
 	        else if(result == -1) {
 	        	System.out.println("Order Failed!");
 	        }else {
 	        	int remaining = quantity-result;
-	        	stocksOwned.put(stockDetails, remaining);
+	        	this.stocksOwned.put(stockDetails, remaining);
 	        	System.out.println("Order partially filled");
 	        }
 		}
@@ -290,13 +309,16 @@ import java.util.*;
 			String oldPass = "",newPass = "",username="";
 			System.out.println("Enter username");
 			username = sc.next();
+			if(this.getUsername() == username) {
+				System.out.println("Wrong username!");
+			}else {
 			System.out.println("Enter old password");
 			oldPass = sc.next();
-			if(oldPass.equals(getPassword())) {
+			if(oldPass.equals(this.getPassword())) {
 			System.out.println("Enter new password");
 			newPass = sc.next();
 			boolean result = broker.setnewpasswrd(username, newPass);
-			if(result == true) {
+			if(result) {
 				setPassword(newPass);
 				System.out.println("Password changed successfully!");
 			}
@@ -304,12 +326,15 @@ import java.util.*;
 				System.out.println("Password change unsuccessful!");
 			}
 				
+			}else {
+				System.out.println("Wrong password");
+			}
 			}
 		}
 		
 		public void queryBrokerageCharges(String name) {
 			double result = broker.getBrokerage(name);
-			System.out.println("Stock "+name+" has Rs."+result+"as brokerage charge");
+			System.out.println("Stock "+name+" has Rs."+result+" as brokerage charge");
 			
 		}
 		public void getTransactionInfo(String name,boolean istaxStmt) {
@@ -319,20 +344,23 @@ import java.util.*;
 		public void searchStock(String name) {
 			Stock result = new Stock();
 			result = broker.getStockInfo(name);
-			System.out.println(result);
+			System.out.println("Stock Details:");
+			System.out.println("Symbol:"+ result.getSymbol());
+			System.out.println("Price:"+ result.getPrice());
+			System.out.println("Quantity available:"+ result.getQuantity());
+			System.out.println("Exchange:"+ result.getExchange());
+			System.out.println("Brokerage Charge:"+ result.getBrokerageCharge());
 		}
 		public void ProfileDetails(String username) {
-			User userDetails = new User();
-			userDetails = broker.getUserDetails(username);
-			System.out.println("Username:"+userDetails.getUsername());
-			System.out.println("Phone number:"+userDetails.getPhone());
-			System.out.println("Email ID:"+userDetails.getEmail());
-			System.out.println("Category:"+userDetails.getCategory());
+//			User userDetails = new User();
+//			userDetails = broker.getUserDetails(username);
+			System.out.println("Username:"+this.getUsername());
+			System.out.println("Phone number:"+this.getPhone());
+			System.out.println("Email ID:"+this.getEmail());
+			System.out.println("Category:"+this.getCategory());
 			System.out.println("Stocks owned:");
-			HashMap<String,Stock> map = new HashMap<>();
-			for(String stock : map.keySet()) {
-				System.out.println(stock);
-			}
+			HashMap<Stock,Integer> map = this.getStocksOwned();
+				System.out.println(map);
 		}
 
 		public String getAdmin_password() {

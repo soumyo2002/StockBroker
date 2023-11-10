@@ -7,12 +7,12 @@ public class ExchangeConnection {
 		return true;
 	}
 
-	public int placeOrder(String username, Stock stock, boolean isBuyOrder, int quantity, String timeInforce,double finalprice) {
+	public int placeOrder(long acc_no, Stock stock, boolean isBuyOrder, int quantity, String timeInforce,double finalprice) {
 		ExchangeConnection ob = new ExchangeConnection();
 		boolean result = ob.getConnection();
 		if(result) {
 			Transaction txn = new Transaction();
-			boolean ack = txn.initiateTransfer(username,stock,isBuyOrder,quantity,timeInforce,finalprice);
+			boolean ack = txn.initiateTransfer(acc_no,stock,isBuyOrder,quantity,timeInforce,finalprice);
 			if(ack) {
 				System.out.println("Money transfered successfully!");
 			}else {

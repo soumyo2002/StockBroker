@@ -12,8 +12,11 @@ public class AccountStatement {
 	String position;
 	String date;
 	int quantity;
+	long acc_no;
 	HashMap<String,AccountStatement> txnDetails;
 	Scanner sc = new Scanner(System.in);
+	
+	private static AccountStatement instance;
 
 	public AccountStatement() {
 		stock = new Stock();
@@ -22,17 +25,19 @@ public class AccountStatement {
 		pL = 0.0;
 		position = "";
 		date = "";
+		acc_no = 0;
 		txnDetails = new HashMap<>();
 	}
 	
-	public void createStatement(String username, Stock stock, boolean isBuyOrder, int quantity, String timeInforce, double finalprice) {
+	public void createStatement(long acc_no, Stock stock, boolean isBuyOrder, int quantity, String timeInforce, double finalprice) {
 		String symbol = stock.getSymbol();
 		Date date = new Date();
-		AccountStatement stmt = txnDetails.get(symbol);
+		AccountStatement stmt =  new AccountStatement();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		stmt.date = dateFormat.format(date);
-		stmt.presentValue = stock.getPrice();
 		if((!txnDetails.isEmpty()) && (txnDetails.containsKey(symbol))) {
+			stmt.date = dateFormat.format(date);
+			stmt.presentValue = stock.getPrice();
+			stmt.acc_no = acc_no;
 			if(isBuyOrder) {
 			double currentPrice = stmt.avgPrice;
 			if(stmt.position == "long") {
@@ -82,6 +87,7 @@ public class AccountStatement {
 			stmt.pL = stmt.avgPrice - stmt.presentValue;
 			}else {
 			AccountStatement newStmt = new AccountStatement();
+			newStmt.acc_no = acc_no;
 			newStmt.avgPrice = finalprice;
 	        SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			newStmt.date = dateformat.format(date);

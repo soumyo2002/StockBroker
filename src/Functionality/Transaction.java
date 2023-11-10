@@ -6,22 +6,18 @@ public class Transaction {
 	long userAccount;
 	long exchangeAccount;
 	
-
 	public Transaction() {
-		super();
 		date = "";
 		amount = 0.0;
 		userAccount = 0L;
 		exchangeAccount = 345708110;
 	}
 
-	public boolean initiateTransfer(String username, Stock stock, boolean isBuyOrder, int quantity, String timeInforce, double finalprice) {
-		StockBroker broker = new StockBroker();
-		User user = broker.getUserDetails(username);
-		userAccount = user.getAcc_no();
-		//initiate transfer using bank services
+
+	public boolean initiateTransfer(long acc_no, Stock stock, boolean isBuyOrder, int quantity, String timeInforce, double finalprice) {
+		//After transaction is successful
 		AccountStatement stmt = new AccountStatement();
-		stmt.createStatement(username,stock,isBuyOrder,quantity,timeInforce,finalprice);
+		stmt.createStatement(acc_no,stock,isBuyOrder,quantity,timeInforce,finalprice);
 		return true;
 	}
 }
