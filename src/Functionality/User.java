@@ -1,26 +1,30 @@
 package Functionality;
 import java.util.*;
 
+//Class representing a user in the stock broker app
 	public class User {
 		
-	    private String username;
-	    private String password;
-	    private String admin_password = "admin";
-	    private String phone;
-	    private String pan;
-	    private String email;
-	    private String adhaar;
-	    private String IFSC;
-	    private String dob;
-	    private String MICR;
-	    private String category;
-	    private long acc_no;
-	    private HashMap<Stock,Integer> stocksOwned;
+		private String username; // User's username
+	    private String password; // User's password
+	    private String admin_password = "admin"; // Admin password
+	    private String phone; // User's phone number
+	    private String pan; // User's PAN number
+	    private String email; // User's email address
+	    private String adhaar; // User's Aadhaar number
+	    private String IFSC; // User's IFSC code
+	    private String dob; // User's date of birth
+	    private String MICR; // User's MICR code
+	    private String category; // User's category
+	    private long acc_no; // User's account number
+	 // HashMap to store stocks owned by the user along with their quantities
+	    private HashMap<Stock, Integer> stocksOwned;
+
+	    // Flag to track the login status of the user
 	    private boolean LoginStatus;
 	    
 	    Scanner sc = new Scanner(System.in);
-	    StockBroker broker = new StockBroker();
-
+	    StockBroker broker = new StockBroker(); // Stock broker associated with the user
+	 // Default constructor to initialize the user attributes
 		public User() {
 			this.username = "";
 			this.password = "";
@@ -36,6 +40,8 @@ import java.util.*;
 			this.stocksOwned = new HashMap<>();
 			this.LoginStatus = false;
 		}
+		
+		//Getters and Setters function
 
 		public String getUsername() {
 			return username;
@@ -251,9 +257,12 @@ import java.util.*;
 	        		System.out.print("Wrong input!");
 	        		
 		}
+	        //Storing the stocks owned by the user
 	        HashMap<Stock,Integer> stockOwned = this.getStocksOwned();
 	        int result = broker.placeOrder(username,acc_no,stock,true,quantity,timeInforce,orderType,stockOwned);
+	        //Storing the Stock information 
 	        Stock stockDetails = broker.getStockInfo(stock);
+	        //Based on type of order placed,updating the details!
 	        if(result == quantity) {
 	        	this.setStocksOwned(stockDetails,quantity);
 	        	System.out.println("Order Fully filled");
@@ -289,9 +298,12 @@ import java.util.*;
 	        		System.out.print("Wrong input!");
 	        		
 		}
+	      //Storing the stocks owned by the user
 	        HashMap<Stock,Integer> stockOwned = this.getStocksOwned();
 	        int result = broker.placeOrder(username,acc_no,stock,false,quantity,timeInforce,orderType,stockOwned);
+	        //Storing the Stock information 
 			Stock stockDetails = broker.getStockInfo(stock);
+			//Based on type of order placed,updating the details!
 	        if(result == quantity) {
 	        	this.stocksOwned.remove(stockDetails);
 	        	System.out.println("Order Fully filled");
@@ -307,6 +319,7 @@ import java.util.*;
 		
 		public void resetPassword() {
 			String oldPass = "",newPass = "",username="";
+			//Verifying credentials
 			System.out.println("Enter username");
 			username = sc.next();
 			if(this.getUsername() == username) {
@@ -317,6 +330,7 @@ import java.util.*;
 			if(oldPass.equals(this.getPassword())) {
 			System.out.println("Enter new password");
 			newPass = sc.next();
+			//Setting new password
 			boolean result = broker.setnewpasswrd(username, newPass);
 			if(result) {
 				setPassword(newPass);

@@ -5,10 +5,12 @@ import java.util.*;
 public class StockBroker {
  private HashMap<String, User> userDB;    // Database of users
  private HashMap<String, Stock> stockList; // List of stocks
- Scanner sc;                             // Scanner for user input
+ Scanner sc;  // Scanner for user input
 //Default constructor to initialize userDB, stockList, and Scanner
 	public StockBroker() {
+		//HashMap to store data for users
 		userDB = new HashMap<>();
+		//HashMap to store data for stocks
 		stockList = new HashMap<>();
 		sc = new Scanner(System.in);
 	}
@@ -31,6 +33,7 @@ public class StockBroker {
 	// Method to add a new stock to the stock list
 	public void addStock() {
 		Authentication auth = new Authentication();
+		//Checking if the user has special privilege to manipulate stockList
 		if(auth.AdminAuth()) {
 			String symbol,exchange;
 			double price,brokerageCharge;
@@ -49,13 +52,14 @@ public class StockBroker {
 			brokerageCharge=sc.nextDouble();
 			System.out.println("Enter Stock quantity");
 			quantity=sc.nextInt();
-			
+			//Creating the Stock object
 			Stock ob = new Stock();
 			ob.setBrokerageCharge(brokerageCharge);
 			ob.setExchange(exchange);
 			ob.setPrice(price);
 			ob.setQuantity(quantity);
 			ob.setSymbol(symbol);
+			//insert the data into stocklist map
 			stockList.put(symbol,ob);
 			System.out.println("Stock added successfully!");
 		}else {
@@ -67,6 +71,7 @@ public class StockBroker {
 	// Method to remove a stock from the stock list
 	public void removeStock() {
 	    Authentication auth = new Authentication();
+	    //Checking if the user has special privilege to manipulate stockList
 	    if(auth.AdminAuth()) {
 	        String symbol;
 	        System.out.println("Enter Stock symbol");
@@ -88,12 +93,13 @@ public class StockBroker {
 	public boolean register_users(String username, String password, String email, String pan, String phone,
 			String adhaar, String IFSC, String dob, String MICR, String category, long acc_no) {
 		Authentication ob = new Authentication();
+		//Check if user is already registered
 		 if(!userDB.isEmpty()) {
 			if(userDB.containsKey("username")) {
 				System.out.println("Username already exists!");
 				return false;
 			}	
-			
+			//Checking if user is using same PAN,email or phone number to create account
 			for(User user : userDB.values()) {
 			if (user.getPan().equals(pan)) {
 				System.out.println("Sorry!only one trading account can be opened with one PAN with one broker");
@@ -107,7 +113,7 @@ public class StockBroker {
 				}
 			}
 		 }
-
+		 //Authenticating rest details
 		if (!ob.passwordAuth(password)) {
 			return false;
 		}
@@ -147,6 +153,7 @@ public class StockBroker {
 		if (userDB.containsKey(username)) {
 			User user = userDB.get(username);
 			HashMap<Stock,Integer> stockList = user.getStocksOwned();
+			//Checking if the user has some stocks held or sold
 			if (stockList.isEmpty()) {
 				userDB.remove(username);
 				System.out.println("Account removed successfully!");
@@ -163,6 +170,7 @@ public class StockBroker {
 	public int placeOrder(String username,long acc_no,String symbol, boolean isBuyorder, int quantity,String timeInforce, String orderType, HashMap<Stock, Integer> stocksTocheck) {
 		int result = -1;
 		Order order;
+		//Setting type of order
 		if(orderType.equals("limit")) {
 			order = new LimitOrder();
 		}else if(orderType.equals("stoploss")) {
@@ -174,25 +182,27 @@ public class StockBroker {
 		}
 		
 		if(isBuyorder) {
+			//Verify is the stock exists in the stockList map
 			if(stockList.containsKey(symbol)) {
 					Stock stock = stockList.get(symbol);
+					//Place order
 					result = order.placeOrder(acc_no,stock, isBuyorder,quantity,timeInforce);
 				}else {
 					System.out.println("Stock is not listed!");
 				}
-			}else {
-			Stock stock = stockList.get(symbol);
-			        if (stocksTocheck.containsKey(stock)) {
-			        	result = order.placeOrder(acc_no,stock, isBuyorder,quantity,timeInforce);
-			        }else{
-			            System.out.println("You don't have the stocks to sell.");
-			        }
-			    }
+			}
+//		else {
+//			Stock stock = stockList.get(symbol);
+//			        if (stocksTocheck.containsKey(stock)) {
+//			        	result = order.placeOrder(acc_no,stock, isBuyorder,quantity,timeInforce);
+//			        }else{
+//			            System.out.println("You don't have the stocks to sell.");
+//			        }
+//			    }
 		return result;
 			}
 
 	public boolean setnewpasswrd(String username,String newPass) {
-		// TODO Auto-generated method stub
 		Authentication auth = new Authentication();
 		boolean result = auth.passwordAuth(newPass);
 		//Implementation details
@@ -200,11 +210,13 @@ public class StockBroker {
 		if(result) {
 		User user = this.userDB.get(username);
 		user.setPassword(newPass);
+		System.out.println("Password changed successfully!")
 		}
 		return result;
 	}
 
 	public double getBrokerage(String stockName) {
+		//Verify is the stock exists
 		if (stockList.containsKey(stockName)) {
 	        Stock stDetails = stockList.get(stockName);
 	        double brokerageCharges = stDetails.getBrokerageCharge();
@@ -216,19 +228,21 @@ public class StockBroker {
 	}
 
 	public HashMap<String,AccountStatement> getTransaction(String name, boolean istaxStmt) {
-		// TODO Auto-generated method stub
 		AccountStatement accstmt = new AccountStatement();
 		HashMap<String,AccountStatement> stmt = new HashMap<>();
+		//Calling function to get the account Statement
 		stmt = accstmt.getStatement(name,istaxStmt);
 		return stmt;
 	}
 
 	public Stock getStockInfo(String name) {
+		//Extracts data from stockList map
 		Stock stockDetails = stockList.get(name);
 		return stockDetails;
 	}
 
 	public User getUserDetails(String username) {
+		//Extracts data from user map
 		User userDetails = userDB.get(username);
 		return userDetails;
 	}
@@ -238,6 +252,7 @@ public class StockBroker {
 		String username = sc.next();
 		System.out.println("Enter password");
 		String password = sc.next();
+		//Checking if the username exists
 		if(this.userDB.containsKey(username)) {
 			User user = this.userDB.get(username);
 			if(password.equals(user.getPassword()))
