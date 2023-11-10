@@ -1,4 +1,5 @@
 package Functionality;
+import java.util.regex.*;
 import java.util.*;
 public class Authentication {
 	
@@ -29,24 +30,62 @@ public class Authentication {
 		    
 		}
 
-	public boolean otpAuth(String email, boolean isEmail) {
+	public boolean otpAuth(String str, boolean isEmail) {
 		// logic to generate and send otp 
-		return true;
+		if(isEmail) {
+		 String regex = "^(.+)@(.+)$";  
+		 Pattern pattern = Pattern.compile(regex);  
+		 Matcher matcher = pattern.matcher(str);
+		 if(matcher.matches())
+			 return true;
+		 else
+			 System.out.println("Invalid Email ID!Format for email is user@domain.com");
+		}else {
+			int len = str.length();
+			if(len == 10)
+				return true;
+			else
+				 System.out.println("Invalid Phone number!It must be 10 digits in length");
+		}
+		return false;
 	}
 
 	public boolean panAuth(String pan) {
 		// logic to authenticate PAN
-		return true;
+		String regrex = "^[A-Z]{5}[0-9]{4}[A-Z]{1}$";
+		Pattern pattern = Pattern.compile(regrex);
+		Matcher matcher = pattern.matcher(pan);
+		if(matcher.matches())
+			return true;
+		else
+			System.out.println("Invalid PAN number!It must have first 5 characters as capital letters,"
+					+ "followed by 4 numbers between 0-9 and finally ending with a uppercase character");
+		return false;
 	}
 
 	public boolean adhaarAuth(String adhaar) {
 		// logic to authenticate Adhaar
-		return true;
+		String regrex = "^[2-9][0-9]{11}$";
+		Pattern pattern = Pattern.compile(regrex);
+		Matcher matcher = pattern.matcher(adhaar);
+		if(matcher.matches())
+			return true;
+		else
+			System.out.println("Invalid Adhaar number!It must 12 characters long.");
+		return false;
 	}
 
 	public boolean bankAuth(String IFSC, String MICR, long acc_no) {
 		// logic to authentciate bank details
-		return true;
+		String str = String.valueOf(acc_no);
+		String regrex = "^[0-9]{9,18}$";
+		Pattern pattern = Pattern.compile(regrex);
+		Matcher matcher = pattern.matcher(str);
+		if(matcher.matches())
+			return true;
+		else
+			System.out.println("Invalid account number!length of account number ranges from 9 to 18");
+		return false;
 	}
 	
 	public boolean AdminAuth() {
@@ -55,10 +94,13 @@ public class Authentication {
 		password = sc.next();
 		User user = new User();
 		String admin_password = user.getAdmin_password();
-		if(admin_password.equals(password))
+		if(admin_password.equals(password)) {
+			System.out.println("Authentication successful!");
 			return true;
-		else
+		}
+		else {
 			return false;
+		}
 	}
 
 }

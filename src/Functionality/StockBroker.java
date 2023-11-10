@@ -70,7 +70,6 @@ public class StockBroker {
 	        String symbol;
 	        System.out.println("Enter Stock symbol");
 	        symbol = sc.next();
-	        System.out.println(stockList);
 	        Stock removedStock = stockList.remove(symbol);
 	        if (removedStock != null) {
 	            System.out.println("Stock removed successfully!");
@@ -205,7 +204,6 @@ public class StockBroker {
 	}
 
 	public double getBrokerage(String stockName) {
-		System.out.println(stockList);
 		if (stockList.containsKey(stockName)) {
 	        Stock stDetails = stockList.get(stockName);
 	        double brokerageCharges = stDetails.getBrokerageCharge();
