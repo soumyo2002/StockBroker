@@ -1,17 +1,18 @@
 package Functionality;
 import java.util.*;
 
+//Class representing a Stock Broker
 public class StockBroker {
-	private HashMap<String,User> userDB;
-	private HashMap<String,Stock> stockList;
-	Scanner sc;
-
+ private HashMap<String, User> userDB;    // Database of users
+ private HashMap<String, Stock> stockList; // List of stocks
+ Scanner sc;                             // Scanner for user input
+//Default constructor to initialize userDB, stockList, and Scanner
 	public StockBroker() {
 		userDB = new HashMap<>();
 		stockList = new HashMap<>();
 		sc = new Scanner(System.in);
 	}
-	
+	// Getter and setter methods
 	public HashMap<String,User> getUserDB() {
 		return userDB;
 	}
@@ -27,7 +28,7 @@ public class StockBroker {
 	public void setStockList(HashMap<String,Stock> stockList) {
 		this.stockList = stockList;
 	}
-
+	// Method to add a new stock to the stock list
 	public void addStock() {
 		Authentication auth = new Authentication();
 		if(auth.AdminAuth()) {
@@ -63,7 +64,7 @@ public class StockBroker {
 		
 	}
 	
-	
+	// Method to remove a stock from the stock list
 	public void removeStock() {
 	    Authentication auth = new Authentication();
 	    if(auth.AdminAuth()) {
@@ -83,7 +84,7 @@ public class StockBroker {
 	}
 
 	
-	
+	// Method to register users
 	public boolean register_users(String username, String password, String email, String pan, String phone,
 			String adhaar, String IFSC, String dob, String MICR, String category, long acc_no) {
 		Authentication ob = new Authentication();

@@ -1,11 +1,18 @@
 package Functionality;
 import java.util.regex.*;
+
+// Class for handling authentication procedures
 import java.util.*;
 public class Authentication {
 	
 	Scanner sc = new Scanner(System.in);
+	// Method to authenticate a password based on specified criteria
 	public boolean passwordAuth(String password) {
 		int len = password.length();
+		//Criteria set for password
+		//Length of password must be 8 characters
+		//It must have atleast one upper and lowercase character,atleast one digit and special character
+		//It should not have whitespaces
 		    if (len <= 8) {
 		        System.out.println("Password length must be greater than 8 characters");
 		        return false;
@@ -29,10 +36,11 @@ public class Authentication {
 		    
 		    
 		}
-
+	 // Method to authenticate an OTP based on the provided string and indication if it's an email or phone number
 	public boolean otpAuth(String str, boolean isEmail) {
-		// logic to generate and send otp 
+		
 		if(isEmail) {
+		//Email ID must have a @ symbol
 		 String regex = "^(.+)@(.+)$";  
 		 Pattern pattern = Pattern.compile(regex);  
 		 Matcher matcher = pattern.matcher(str);
@@ -42,16 +50,24 @@ public class Authentication {
 			 System.out.println("Invalid Email ID!Format for email is user@domain.com");
 		}else {
 			int len = str.length();
-			if(len == 10)
+			//Phone number must have 10 digits
+			if(len == 10 && str.matches("\\d+"))
 				return true;
 			else
 				 System.out.println("Invalid Phone number!It must be 10 digits in length");
 		}
 		return false;
+		
+		//Further we can add logic to generate and send otp 
 	}
 
+	// Method to authenticate a PAN (Permanent Account Number)
 	public boolean panAuth(String pan) {
 		// logic to authenticate PAN
+		//Rules for PAN Number
+		//Starting 5 characters are uppercase alphabets
+		//Next 4 characters are digits
+		//Ending with one uppercase character
 		String regrex = "^[A-Z]{5}[0-9]{4}[A-Z]{1}$";
 		Pattern pattern = Pattern.compile(regrex);
 		Matcher matcher = pattern.matcher(pan);
@@ -63,8 +79,10 @@ public class Authentication {
 		return false;
 	}
 
+	// Method to authenticate a Adhaar
 	public boolean adhaarAuth(String adhaar) {
 		// logic to authenticate Adhaar
+		//Starting digit should range from 2-9 and rest 11 digits must be between 0-9
 		String regrex = "^[2-9][0-9]{11}$";
 		Pattern pattern = Pattern.compile(regrex);
 		Matcher matcher = pattern.matcher(adhaar);
@@ -75,9 +93,11 @@ public class Authentication {
 		return false;
 	}
 
+	// Method to authenticate a Bank details
 	public boolean bankAuth(String IFSC, String MICR, long acc_no) {
 		// logic to authentciate bank details
 		String str = String.valueOf(acc_no);
+		//Account numbers are generally between 9-18 digits in length
 		String regrex = "^[0-9]{9,18}$";
 		Pattern pattern = Pattern.compile(regrex);
 		Matcher matcher = pattern.matcher(str);
@@ -88,6 +108,7 @@ public class Authentication {
 		return false;
 	}
 	
+	// Method to authenticate admin privileges
 	public boolean AdminAuth() {
 		String password;
 		System.out.println("Enter admin password");

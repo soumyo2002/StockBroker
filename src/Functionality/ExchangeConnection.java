@@ -9,10 +9,13 @@ public class ExchangeConnection {
 
 	public int placeOrder(long acc_no, Stock stock, boolean isBuyOrder, int quantity, String timeInforce,double finalprice) {
 		ExchangeConnection ob = new ExchangeConnection();
+		//Forming connection with Exchange server
 		boolean result = ob.getConnection();
 		if(result) {
 			Transaction txn = new Transaction();
+			//to transfer amount from bank
 			boolean ack = txn.initiateTransfer(acc_no,stock,isBuyOrder,quantity,timeInforce,finalprice);
+			//If acknowledgement is recieved then success else failed
 			if(ack) {
 				System.out.println("Money transfered successfully!");
 			}else {
