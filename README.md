@@ -18,6 +18,9 @@ The Stock Broker App has the following key requirements:
 
 ![temp](https://github.com/soumyo2002/StockBroker/assets/92665254/e0558ab6-49a7-417d-bebb-14ce0178593b)
 
+## Use Case Diagram
+
+![use case diagram](https://github.com/soumyo2002/StockBroker/assets/92665254/902c9aac-032d-4c93-aa3b-6c85d6241792)
 
 
 
