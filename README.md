@@ -27,8 +27,9 @@ The Stock Broker App has the following key requirements:
 ## Project Structure
 
 - `src/` contains the source code for the Stock Broker App.
-- `class diagram/` contains pdf version of the class diagram.
-- `tenp/` contains the draw io file of class diagrm.
+- `class diagram` contains pdf version of the class diagram.
+- `use case diagram` contains pdf version of the use case diagram.
+- `temp` contains the draw io file of class diagram.
 
 ## Contact
 
