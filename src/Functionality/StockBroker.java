@@ -6,6 +6,7 @@ public class StockBroker {
  private HashMap<String, User> userDB;    // Database of users
  private HashMap<String, Stock> stockList; // List of stocks
  Scanner sc;  // Scanner for user input
+ AccountStatement stmt = new AccountStatement();//creating object of account statement class
 //Default constructor to initialize userDB, stockList, and Scanner
 	public StockBroker() {
 		//HashMap to store data for users
@@ -186,7 +187,12 @@ public class StockBroker {
 			if(stockList.containsKey(symbol)) {
 					Stock stock = stockList.get(symbol);
 					//Place order
+//					result = order.placeOrder(acc_no,stock, isBuyorder,quantity,timeInforce);
+					
+					
 					result = order.placeOrder(acc_no,stock, isBuyorder,quantity,timeInforce);
+					double finalprice = result*(stock.getPrice());
+			        stmt.createStatement(acc_no, stock, isBuyorder, result, timeInforce, finalprice);
 				}else {
 					System.out.println("Stock is not listed!");
 				}
@@ -210,7 +216,7 @@ public class StockBroker {
 		if(result) {
 		User user = this.userDB.get(username);
 		user.setPassword(newPass);
-		System.out.println("Password changed successfully!")
+		System.out.println("Password changed successfully!");
 		}
 		return result;
 	}
@@ -228,11 +234,10 @@ public class StockBroker {
 	}
 
 	public HashMap<String,AccountStatement> getTransaction(String name, boolean istaxStmt) {
-		AccountStatement accstmt = new AccountStatement();
-		HashMap<String,AccountStatement> stmt = new HashMap<>();
+		HashMap<String,AccountStatement> accstmt = new HashMap<>();
 		//Calling function to get the account Statement
-		stmt = accstmt.getStatement(name,istaxStmt);
-		return stmt;
+		accstmt = stmt.getStatement(name,istaxStmt);
+		return accstmt;
 	}
 
 	public Stock getStockInfo(String name) {

@@ -19,8 +19,8 @@ public class Transaction {
     public boolean initiateTransfer(long acc_no, Stock stock, boolean isBuyOrder, int quantity, String timeInforce,
             double finalprice) {
         // After the transaction is successful, create a new AccountStatement
-        AccountStatement stmt = new AccountStatement();
-        stmt.createStatement(acc_no, stock, isBuyOrder, quantity, timeInforce, finalprice);
+//        AccountStatement stmt = new AccountStatement();
+//        stmt.createStatement(acc_no, stock, isBuyOrder, quantity, timeInforce, finalprice);
         return true; // Return true to indicate a successful fund transfer initiation
     }
 }
