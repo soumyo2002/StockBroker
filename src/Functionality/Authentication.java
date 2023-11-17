@@ -89,13 +89,13 @@ public class Authentication {
 		if(matcher.matches())
 			return true;
 		else
-			System.out.println("Invalid Adhaar number!It must 12 characters long.");
+			System.out.println("Invalid Adhaar number!It must 12 characters long and first digit must be between 2-9.");
 		return false;
 	}
 
 	// Method to authenticate a Bank details
 	public boolean bankAuth(String IFSC, String MICR, long acc_no) {
-		// logic to authentciate bank details
+		// logic to authenticate bank details
 		String str = String.valueOf(acc_no);
 		//Account numbers are generally between 9-18 digits in length
 		String regrex = "^[0-9]{9,18}$";

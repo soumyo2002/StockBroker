@@ -1,5 +1,7 @@
 package Functionality;
 
+import java.util.HashMap;
+
 // Class representing an Order
 public class Order {
     String status; // Status of the order
@@ -10,7 +12,7 @@ public class Order {
     }
 
     // Method to place an order based on the provided parameters
-    public int placeOrder(long acc_no, Stock ob, boolean isBuyOrder, int quantity, String timeInforce) {
+    public int placeOrder(long acc_no, Stock ob, boolean isBuyOrder, int quantity, String timeInforce, HashMap<Stock, Integer> stocksTocheck) {
         double finalprice = 0.0;
 
         // Check if it's a buy order

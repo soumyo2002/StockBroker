@@ -83,23 +83,27 @@ public class StockBroker {
 	        } else {
 	            System.out.println("Stock not found!");
 	        }
-	        System.out.println(stockList);
+//	        System.out.println(stockList);
 	    } else {
 	        System.out.println("Wrong password!");
 	    }
 	}
-
+	
+	public boolean check_Username(String username) {
+		//Check if user is already registered
+		if(!userDB.isEmpty()) {
+			if(userDB.containsKey("username")) {
+				System.out.println("Username already exists!");
+				return false;
+			}
+		}
+			return true;
+	}
 	
 	// Method to register users
 	public boolean register_users(String username, String password, String email, String pan, String phone,
 			String adhaar, String IFSC, String dob, String MICR, String category, long acc_no) {
-		Authentication ob = new Authentication();
-		//Check if user is already registered
-		 if(!userDB.isEmpty()) {
-			if(userDB.containsKey("username")) {
-				System.out.println("Username already exists!");
-				return false;
-			}	
+//		Authentication ob = new Authentication();
 			//Checking if user is using same PAN,email or phone number to create account
 			for(User user : userDB.values()) {
 			if (user.getPan().equals(pan)) {
@@ -113,32 +117,6 @@ public class StockBroker {
 				return false;
 				}
 			}
-		 }
-		 //Authenticating rest details
-		if (!ob.passwordAuth(password)) {
-			return false;
-		}
-
-		if (!ob.otpAuth(email, true)) {
-			System.out.println("Otp didn't match!");
-			return false;
-		}
-		if (!ob.otpAuth(phone, false)) {
-			System.out.println("Otp didn't match!");
-			return false;
-		}
-		if (!ob.panAuth(pan)) {
-			System.out.println("invalid PAN credetails!");
-			return false;
-		}
-		if (!ob.adhaarAuth(adhaar)) {
-			System.out.println("invalid Adhaar credetails");
-			return false;
-		}
-		if (!ob.bankAuth(IFSC, MICR, acc_no)) {
-			return false;
-		}
-
 		User user = new User();
 		//While implementation I will encrypt the password
 		user.setData(username, password, email, pan, phone, adhaar, IFSC, dob, MICR, category, acc_no);
@@ -182,29 +160,20 @@ public class StockBroker {
 			order = new Marketorder();
 		}
 		
-		if(isBuyorder) {
+		Stock stock = stockList.get(symbol);
 			//Verify is the stock exists in the stockList map
 			if(stockList.containsKey(symbol)) {
-					Stock stock = stockList.get(symbol);
 					//Place order
-//					result = order.placeOrder(acc_no,stock, isBuyorder,quantity,timeInforce);
-					
-					
-					result = order.placeOrder(acc_no,stock, isBuyorder,quantity,timeInforce);
+					result = order.placeOrder(acc_no,stock, isBuyorder,quantity,timeInforce,stocksTocheck);
+					if(result == -1) {
+						return result;
+					}
 					double finalprice = result*(stock.getPrice());
 			        stmt.createStatement(acc_no, stock, isBuyorder, result, timeInforce, finalprice);
+			        
 				}else {
 					System.out.println("Stock is not listed!");
 				}
-			}
-//		else {
-//			Stock stock = stockList.get(symbol);
-//			        if (stocksTocheck.containsKey(stock)) {
-//			        	result = order.placeOrder(acc_no,stock, isBuyorder,quantity,timeInforce);
-//			        }else{
-//			            System.out.println("You don't have the stocks to sell.");
-//			        }
-//			    }
 		return result;
 			}
 
@@ -216,7 +185,6 @@ public class StockBroker {
 		if(result) {
 		User user = this.userDB.get(username);
 		user.setPassword(newPass);
-		System.out.println("Password changed successfully!");
 		}
 		return result;
 	}

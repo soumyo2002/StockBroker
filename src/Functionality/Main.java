@@ -25,33 +25,14 @@ public class Main {
 		input = sc.nextInt();
 		
 		if(input == 1) {
-			System.out.println("Enter username");
-			String username = sc.next();
-			System.out.println("Enter password");
-			String password = sc.next();
-			System.out.println("Enter email ID");
-			String email = sc.next();
-			System.out.println("Enter PAN number");
-			String pan = sc.next();
-			System.out.println("Enter phone number");
-			String phone = sc.next();
-			System.out.println("Enter adhaar number");
-			String adhaar = sc.next();
-			System.out.println("Enter IFSC");
-			String IFSC = sc.next();
-			System.out.println("Enter date of birth");
-			String dob = sc.next();
-			System.out.println("Enter MICR");
-			String MICR = sc.next();
-			System.out.println("Enter category");
-			String category = sc.next();
-			System.out.println("Enter acc_no");
-			long acc_no = sc.nextLong();
-			user.setData(username, password, email, pan, phone, adhaar, IFSC, dob, MICR, category, acc_no);
 			user.register();
 			continue;
 		}else if(input == 3) {
 			loggedIn = user.Login();
+			if(loggedIn) 
+				System.out.println("Logged In successfully!");
+			else
+				System.out.println("Log In failed!");
 			continue;
 		}else if(input == 14){
 			break;

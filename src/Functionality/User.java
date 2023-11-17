@@ -18,13 +18,14 @@ import java.util.*;
 	    private long acc_no; // User's account number
 	 // HashMap to store stocks owned by the user along with their quantities
 	    private HashMap<Stock, Integer> stocksOwned;
+	    Authentication auth = new Authentication();
 
 	    // Flag to track the login status of the user
 	    private boolean LoginStatus;
 	    
 	    Scanner sc = new Scanner(System.in);
 	    StockBroker broker = new StockBroker(); // Stock broker associated with the user
-	 // Default constructor to initialize the user attributes
+	    // Default constructor to initialize the user attributes
 		public User() {
 			this.username = "";
 			this.password = "";
@@ -32,9 +33,9 @@ import java.util.*;
 			this.pan = "";
 			this.email = "";
 			this.adhaar = "";
-			IFSC = "";
+			this.IFSC = "";
 			this.dob = "";
-			MICR = "";
+			this.MICR = "";
 			this.category = "";
 			this.acc_no = 0;
 			this.stocksOwned = new HashMap<>();
@@ -185,7 +186,6 @@ import java.util.*;
 
 		public void setData(String username, String password, String email, String pan, String phone, String adhaar, String IFSC, String dob, String MICR, String category, long acc_no) {
 	        this.username = username;
-	      //While implementation I will encrypt the password
 	        this.password = password;
 	        this.email = email;
 	        this.pan = pan;
@@ -199,6 +199,148 @@ import java.util.*;
 	}
 
 		public void register() {
+			System.out.println("Enter details for registration. Enter -1 at any point to discontinue registration");
+			
+			while(true) {
+			System.out.println("Enter username");
+			String username = sc.next();
+			if(username == "-1") {
+				return;
+			}
+			//Check if username already exists!
+			if(broker.check_Username(username)) {
+				this.setUsername(username);
+				break;
+			}else {
+				System.out.println("Try again!Else press -1 to exit");
+			}
+			}
+			
+			while(true) {
+			System.out.println("Enter password");
+			String password = sc.next();
+			if(password == "-1") {
+				return;
+			}
+			//authenticating Details
+			if(auth.passwordAuth(password)) {
+				this.setPassword(password);
+				break;
+			}else {
+				System.out.println("Try again!Else press -1 to exit");
+			}
+			}
+			
+			while(true) {
+			System.out.println("Enter email ID");
+			String email = sc.next();
+			if(email == "-1") {
+				return;
+			}
+			if(auth.otpAuth(email, true)) {
+				this.setEmail(email);
+				break;
+			}else {
+				System.out.println("Try again!Else press -1 to exit");
+			}
+		}
+			
+			while(true){
+			System.out.println("Enter PAN number");
+			String pan = sc.next();
+			if(pan == "-1") {
+				return;
+			}
+			if(auth.panAuth(pan)) {
+			this.setPan(pan);
+			break;
+			}else {
+				System.out.println("Try again!Else press -1 to exit");
+			}
+		}
+			while(true) {
+			System.out.println("Enter phone number");
+			String phone = sc.next();
+			if(phone == "-1") {
+				return;
+			}
+			if(auth.otpAuth(phone, false)) {
+			this.setPhone(phone);
+			break;
+			}else {
+				System.out.println("Try again!Else press -1 to exit");
+				}
+			}
+			
+			while(true) {
+			System.out.println("Enter adhaar number");
+			String adhaar = sc.next();
+			if(adhaar == "-1") {
+				return;
+			}
+			if(auth.adhaarAuth(adhaar)) {
+			this.setAdhaar(adhaar);
+			break;
+			}else {
+				System.out.println("Try again!Else press -1 to exit");
+			}
+		}
+			
+			System.out.println("Enter date of birth");
+			String dob = sc.next();
+			if(dob == "-1") {
+				return;
+			}else {
+			this.setDob(dob);
+			}
+			
+			String category = "";
+			while(true) {
+			System.out.println("Enter category.Enter 1 for individual and 2 for institution");
+			int input = sc.nextInt();
+			if(input ==	-1) 
+				return;
+			else if(input == 1) {
+				category = "individual";
+				break;
+			}
+			else if(input == 2) {
+				category = "institution";
+				break;
+			}
+			else {
+				System.out.println("Try again!Else press -1 to exit");
+			}
+			}
+			this.setCategory(category);
+			
+			while(true) {
+			System.out.println("Enter IFSC");
+			String IFSC = sc.next();
+			
+			if(IFSC == "-1")
+				return;
+			
+			System.out.println("Enter MICR");
+			String MICR = sc.next();
+			System.out.println("Enter acc_no");
+			long acc_no = sc.nextLong();
+			
+			if(auth.bankAuth(IFSC, MICR, acc_no)) {
+			
+			this.setIFSC(IFSC);
+			this.setMICR(MICR);
+			this.setAcc_no(acc_no);
+			break;
+			}else {
+				System.out.println("Try again!Else press -1 to exit");
+			}
+			}
+			
+			
+			
+			
+			//After authentication,registering the user
 	        boolean result = broker.register_users(username,password,email, pan, phone, adhaar, IFSC, dob, MICR, category, acc_no);
 	        
 	        if(result == true)
@@ -239,7 +381,7 @@ import java.util.*;
 	        System.out.println("Enter 1 for limit order,2 for stoploss order,3 for stoplimit order and 4 for market order");
 	        int input = sc.nextInt();
 	        String orderType = "";
-	        
+	        //Setting the type of order
 	        switch (input){
 	        	case 1:
 	        		orderType = "limit";
@@ -300,21 +442,34 @@ import java.util.*;
 		}
 	      //Storing the stocks owned by the user
 	        HashMap<Stock,Integer> stockOwned = this.getStocksOwned();
+	        Stock ob = broker.getStockInfo(stock);
+	        int quantityHeld =0;
+	        if(stockOwned.containsKey(ob)) {
+	        	quantityHeld = stockOwned.get(ob);
+	        }
+	        else {
+	        	System.out.println("You don't have stocks to sell!");
+	        	return;
+	        }
 	        int result = broker.placeOrder(username,acc_no,stock,false,quantity,timeInforce,orderType,stockOwned);
 	        //Storing the Stock information 
 			Stock stockDetails = broker.getStockInfo(stock);
 			//Based on type of order placed,updating the details!
 	        if(result == quantity) {
-	        	this.stocksOwned.remove(stockDetails);
 	        	System.out.println("Order Fully filled");
 	        }
 	        else if(result == -1) {
 	        	System.out.println("Order Failed!");
 	        }else {
-	        	int remaining = quantity-result;
-	        	this.stocksOwned.put(stockDetails, remaining);
 	        	System.out.println("Order partially filled");
 	        }
+	        if(quantityHeld == result) {
+	        this.stocksOwned.remove(stockDetails);
+	        }else {
+	        	int remaining = quantityHeld-result;
+	        	this.stocksOwned.put(stockDetails, remaining);
+	        }
+	        
 		}
 		
 		public void resetPassword() {
@@ -335,6 +490,7 @@ import java.util.*;
 			if(result) {
 				setPassword(newPass);
 				System.out.println("Password changed successfully!");
+				
 			}
 			else {
 				System.out.println("Password change unsuccessful!");
@@ -352,12 +508,30 @@ import java.util.*;
 			
 		}
 		public void getTransactionInfo(String name,boolean istaxStmt) {
+			//Calling function to get transaction details
 			HashMap<String,AccountStatement> result = broker.getTransaction(name,istaxStmt);
-			System.out.println(result);
+			int count = 1;
+			for(AccountStatement stmt : result.values()) {
+				System.out.println(count+".");
+				System.out.println("Symbol: "+stmt.symbol);
+				System.out.println("Account no: "+stmt.acc_no);
+				System.out.println("Average Price: "+stmt.avgPrice);
+				System.out.println("Transaction Date: "+stmt.date);
+				System.out.println("Profit/Loss: "+stmt.pL);
+				System.out.println("Position : "+stmt.position);
+				System.out.println("Current value: "+stmt.presentValue);
+				System.out.println("Quantity Held: "+stmt.quantity);
+				count+=1;
+				
+			}
 		}
 		public void searchStock(String name) {
 			Stock result = new Stock();
 			result = broker.getStockInfo(name);
+			if(result == null) {
+				System.out.println("Stock is not listed!");
+				return;
+			}
 			System.out.println("Stock Details:");
 			System.out.println("Symbol:"+ result.getSymbol());
 			System.out.println("Price:"+ result.getPrice());
@@ -374,7 +548,9 @@ import java.util.*;
 			System.out.println("Category:"+this.getCategory());
 			System.out.println("Stocks owned:");
 			HashMap<Stock,Integer> map = this.getStocksOwned();
-				System.out.println(map);
+			for(Stock stock : map.keySet()) {
+				System.out.println("Symbol: "+stock.getSymbol()+" Quantity held: "+map.get(stock));
+			}
 		}
 
 		public String getAdmin_password() {
