@@ -15,8 +15,8 @@ The Stock Broker App has the following key requirements:
 
 ## Class Diagram
 
+![temp (1)](https://github.com/soumyo2002/StockBroker/assets/92665254/ff2cff73-37d9-480b-85d9-e8c0399bfb74)
 
-![temp](https://github.com/soumyo2002/StockBroker/assets/92665254/e0558ab6-49a7-417d-bebb-14ce0178593b)
 
 ## Use Case Diagram
 
@@ -30,7 +30,7 @@ The Stock Broker App has the following key requirements:
 - `class diagram` contains pdf version of the class diagram.
 - `use case diagram` contains pdf version of the use case diagram.
 - `temp` contains the draw io file of class diagram.
-
+- `use case diagram.vpd` contains the draw io file of use case diagram.
 ## Contact
 
 If you have any questions or need assistance, please feel free to contact us:
